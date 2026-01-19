@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" remote:*)",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" diff --stat)",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" add app/page.tsx app/register/page.tsx components/ChatArea.tsx components/Dashboard.tsx)",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" commit -m \"$\\(cat <<''EOF''\nFix TypeScript errors on Supabase calls\n\nAdd type assertions \\(as any\\) to Supabase insert/select calls and\nrealtime payload properties to resolve type inference issues.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" push origin main)",
+      "Bash(npm run build:*)",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" add lib/supabase/middleware.ts lib/supabase/server.ts)",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" commit -m \"$\\(cat <<''EOF''\nFix implicit any type errors in Supabase cookie handlers\n\nAdd explicit types for cookiesToSet parameters in middleware.ts\nand server.ts to resolve TypeScript strict mode errors.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" add -A)",
+      "Bash(git -C \"C:\\\\Users\\\\biato\\\\Code\\\\meme-collab\" commit -m \"$\\(cat <<''EOF''\nRename app from MemeCollab to Joelememe inspi\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-# MemeCollab
+# Joelememe inspi
 
 A collaborative space for creating memes with friends. Real-time chat with image sharing.
 
