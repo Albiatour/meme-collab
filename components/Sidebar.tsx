@@ -113,10 +113,10 @@ export default function Sidebar({
             projects.map((project) => (
               <div
                 key={project.id}
-                className={`group flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition touch-target ${
+                className={`group flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition touch-target touch-manipulation ${
                   selectedProject?.id === project.id
                     ? 'bg-indigo-600 text-white'
-                    : 'text-slate-300 hover:bg-slate-700 active:bg-slate-600'
+                    : 'text-slate-300 md:hover:bg-slate-700 active:bg-slate-600'
                 }`}
                 onClick={() => onSelectProject(project)}
               >
@@ -136,10 +136,10 @@ export default function Sidebar({
                         onDeleteProject(project.id)
                       }
                     }}
-                    className={`p-2 rounded-lg opacity-0 group-hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 transition touch-target ${
+                    className={`p-2 rounded-lg opacity-0 md:group-hover:opacity-100 transition touch-target touch-manipulation ${
                       selectedProject?.id === project.id
-                        ? 'hover:bg-indigo-700 active:bg-indigo-800 text-indigo-200'
-                        : 'hover:bg-slate-600 active:bg-slate-500 text-slate-400'
+                        ? 'md:hover:bg-indigo-700 active:bg-indigo-800 text-indigo-200'
+                        : 'md:hover:bg-slate-600 active:bg-slate-500 text-slate-400'
                     }`}
                     aria-label="Delete project"
                   >
