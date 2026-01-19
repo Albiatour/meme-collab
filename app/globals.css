@@ -8,9 +8,15 @@
 }
 
 html, body {
+  height: 100%;
+  overflow: hidden;
   @apply bg-slate-900 text-white;
   -webkit-tap-highlight-color: transparent;
-  overscroll-behavior: none;
+}
+
+#__next, main {
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Prevent body scroll when menu is open */
@@ -25,6 +31,13 @@ body.menu-open {
 
 .safe-area-top {
   padding-top: max(0px, var(--safe-area-inset-top));
+}
+
+/* iOS safe area bottom padding */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  }
 }
 
 /* Touch-friendly tap targets */

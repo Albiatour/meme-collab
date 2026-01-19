@@ -17,7 +17,6 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
   const [messages, setMessages] = useState<(Message & { profiles: Profile })[]>([])
   const [loading, setLoading] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
   const scrollToBottom = (smooth = true) => {
@@ -39,7 +38,6 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
         setMessages(data as (Message & { profiles: Profile })[])
       }
       setLoading(false)
-      // Scroll without animation on initial load
       setTimeout(() => scrollToBottom(false), 100)
     }
 
@@ -122,9 +120,9 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
   }
 
   return (
-    <div className="flex flex-col h-full bg-slate-900">
-      {/* Desktop Header - hidden on mobile since we have the top bar */}
-      <div className="hidden md:flex items-center px-6 py-4 border-b border-slate-700 bg-slate-800">
+    <div className="h-full flex flex-col overflow-hidden bg-slate-900">
+      {/* Desktop Header - hidden on mobile */}
+      <div className="hidden md:flex items-center px-6 py-4 border-b border-slate-700 bg-slate-800 shrink-0">
         <div>
           <h2 className="text-lg font-semibold text-white">{project.title}</h2>
           <p className="text-sm text-slate-400">
@@ -133,11 +131,8 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
         </div>
       </div>
 
-      {/* Messages Container */}
-      <div
-        ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
-      >
+      {/* Messages - scrollable area */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {loading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-2 border-indigo-500 border-t-transparent"></div>
@@ -166,8 +161,10 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input - sticky at bottom */}
-      <MessageInput onSend={handleSendMessage} />
+      {/* Input - fixed at bottom, outside scroll area */}
+      <div className="shrink-0 border-t border-slate-700 bg-slate-800">
+        <MessageInput onSend={handleSendMessage} />
+      </div>
     </div>
   )
 }

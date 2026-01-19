@@ -55,7 +55,6 @@ export default function MessageInput({ onSend }: MessageInputProps) {
       await onSend(content.trim(), imageFile || undefined)
       setContent('')
       clearImage()
-      // Reset textarea height
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto'
       }
@@ -67,8 +66,6 @@ export default function MessageInput({ onSend }: MessageInputProps) {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // On mobile, always allow Enter for new line
-    // On desktop, Enter sends, Shift+Enter for new line
     if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) {
       e.preventDefault()
       handleSubmit(e as unknown as React.FormEvent)
@@ -77,14 +74,13 @@ export default function MessageInput({ onSend }: MessageInputProps) {
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value)
-    // Auto-resize textarea
     const textarea = e.target
     textarea.style.height = 'auto'
     textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'
   }
 
   return (
-    <div className="border-t border-slate-700 bg-slate-800 px-3 py-3 md:px-4 md:py-4 safe-area-bottom">
+    <div className="px-3 pt-3 pb-3 pb-safe md:px-4 md:pt-4">
       {/* Image preview */}
       {imagePreview && (
         <div className="mb-3 relative inline-block">
@@ -110,7 +106,6 @@ export default function MessageInput({ onSend }: MessageInputProps) {
       )}
 
       <form onSubmit={handleSubmit} className="flex items-end gap-2">
-        {/* Hidden file input */}
         <input
           type="file"
           ref={fileInputRef}
@@ -119,7 +114,6 @@ export default function MessageInput({ onSend }: MessageInputProps) {
           className="hidden"
         />
 
-        {/* Image upload button */}
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
@@ -132,7 +126,6 @@ export default function MessageInput({ onSend }: MessageInputProps) {
           </svg>
         </button>
 
-        {/* Text input */}
         <div className="flex-1 min-w-0">
           <textarea
             ref={textareaRef}
@@ -147,7 +140,6 @@ export default function MessageInput({ onSend }: MessageInputProps) {
           />
         </div>
 
-        {/* Send button */}
         <button
           type="submit"
           disabled={sending || (!content.trim() && !imageFile)}
@@ -164,7 +156,6 @@ export default function MessageInput({ onSend }: MessageInputProps) {
         </button>
       </form>
 
-      {/* Helper text - desktop only */}
       <p className="hidden md:block mt-2 text-xs text-slate-500">
         Press Enter to send, Shift+Enter for new line
       </p>
