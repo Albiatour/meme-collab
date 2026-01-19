@@ -31,7 +31,7 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
         .from('messages')
         .select('*, profiles(*)')
         .eq('project_id', project.id)
-        .order('created_at', { ascending: true })
+        .order('created_at', { ascending: true }) as any
 
       if (data) {
         setMessages(data as (Message & { profiles: Profile })[])
@@ -57,8 +57,8 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
           const { data } = await supabase
             .from('messages')
             .select('*, profiles(*)')
-            .eq('id', payload.new.id)
-            .single()
+            .eq('id', (payload.new as any).id)
+            .single() as any
 
           if (data) {
             setMessages((prev) => [...prev, data as Message & { profiles: Profile }])
@@ -74,7 +74,7 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
           filter: `project_id=eq.${project.id}`,
         },
         (payload) => {
-          setMessages((prev) => prev.filter((m) => m.id !== payload.old.id))
+          setMessages((prev) => prev.filter((m) => m.id !== (payload.old as any).id))
         }
       )
       .subscribe()
@@ -118,7 +118,7 @@ export default function ChatArea({ project, currentUser, profile }: ChatAreaProp
       user_id: currentUser.id,
       content: content || null,
       image_url: imageUrl,
-    })
+    } as any)
   }
 
   return (

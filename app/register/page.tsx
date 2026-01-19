@@ -24,7 +24,7 @@ export default function RegisterPage() {
       .from('profiles')
       .select('username')
       .eq('username', username)
-      .single()
+      .single() as any
 
     if (existingUser) {
       setError('Username is already taken')

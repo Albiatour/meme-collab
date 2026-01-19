@@ -36,15 +36,15 @@ export default function Dashboard({ user, profile, initialProjects }: DashboardP
             const { data } = await supabase
               .from('projects')
               .select('*, profiles(username)')
-              .eq('id', payload.new.id)
-              .single()
+              .eq('id', (payload.new as any).id)
+              .single() as any
 
             if (data) {
               setProjects((prev) => [data, ...prev])
             }
           } else if (payload.eventType === 'DELETE') {
-            setProjects((prev) => prev.filter((p) => p.id !== payload.old.id))
-            if (selectedProject?.id === payload.old.id) {
+            setProjects((prev) => prev.filter((p) => p.id !== (payload.old as any).id))
+            if (selectedProject?.id === (payload.old as any).id) {
               setSelectedProject(null)
             }
           }
@@ -60,7 +60,7 @@ export default function Dashboard({ user, profile, initialProjects }: DashboardP
   const handleCreateProject = async (title: string) => {
     const { data, error } = await supabase
       .from('projects')
-      .insert({ title, created_by: user.id })
+      .insert({ title, created_by: user.id } as any)
       .select('*, profiles(username)')
       .single()
 

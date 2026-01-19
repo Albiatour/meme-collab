@@ -15,12 +15,12 @@ export default async function Home() {
     .from('profiles')
     .select('*')
     .eq('id', user.id)
-    .single()
+    .single() as any
 
   const { data: projects } = await supabase
     .from('projects')
     .select('*, profiles(username)')
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false }) as any
 
   return (
     <Dashboard
