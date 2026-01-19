@@ -50,6 +50,13 @@ body.menu-open {
   touch-action: manipulation;
 }
 
+/* Prevent native context menu on message bubbles */
+.message-bubble {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 4px;

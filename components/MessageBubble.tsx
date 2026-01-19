@@ -47,6 +47,10 @@ export default function MessageBubble({
     setTouchStart({ x: touch.clientX, y: touch.clientY })
 
     longPressTimer.current = setTimeout(() => {
+      // Haptic feedback if supported
+      if (navigator.vibrate) {
+        navigator.vibrate(50)
+      }
       setShowPicker(true)
       setTouchStart(null)
     }, 500)
@@ -104,7 +108,7 @@ export default function MessageBubble({
     <div
       ref={messageRef}
       id={`message-${message.id}`}
-      className={`flex ${isOwn ? 'justify-end' : 'justify-start'} relative`}
+      className={`flex ${isOwn ? 'justify-end' : 'justify-start'} relative message-bubble`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => {
         setShowActions(false)
@@ -113,6 +117,7 @@ export default function MessageBubble({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onContextMenu={(e) => e.preventDefault()}
       style={{
         transform: `translateX(${swipeOffset}px)`,
         transition: swipeOffset === 0 ? 'transform 0.2s ease-out' : 'none',
@@ -207,7 +212,10 @@ export default function MessageBubble({
                     alt="Shared image"
                     width={400}
                     height={400}
-                    className="object-contain w-full max-h-[300px] md:max-h-[400px] rounded-xl"
+                    className="object-contain w-full max-h-[300px] md:max-h-[400px] rounded-xl select-none"
+                    style={{ WebkitTouchCallout: 'none' }}
+                    draggable={false}
+                    onContextMenu={(e) => e.preventDefault()}
                     unoptimized
                   />
                 </div>
