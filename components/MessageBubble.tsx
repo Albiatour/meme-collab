@@ -179,12 +179,12 @@ export default function MessageBubble({
 
           {/* Reaction picker */}
           {showPicker && (
-            <div className={`absolute ${isOwn ? 'right-0' : 'left-0'} bottom-full mb-2`}>
-              <ReactionPicker
-                onSelect={onReact}
-                onClose={() => setShowPicker(false)}
-              />
-            </div>
+            <ReactionPicker
+              onSelect={onReact}
+              onReply={onReply}
+              onClose={() => setShowPicker(false)}
+              messageContent={message.content}
+            />
           )}
 
           {/* Bubble */}
