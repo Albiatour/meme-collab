@@ -13,17 +13,16 @@ export default function MessageInput({ onSend }: MessageInputProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         alert('Please select an image file')
         return
       }
 
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('Image must be less than 5MB')
         return
@@ -56,6 +55,10 @@ export default function MessageInput({ onSend }: MessageInputProps) {
       await onSend(content.trim(), imageFile || undefined)
       setContent('')
       clearImage()
+      // Reset textarea height
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto'
+      }
     } catch (error) {
       console.error('Failed to send message:', error)
     } finally {
@@ -64,18 +67,28 @@ export default function MessageInput({ onSend }: MessageInputProps) {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    // On mobile, always allow Enter for new line
+    // On desktop, Enter sends, Shift+Enter for new line
+    if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) {
       e.preventDefault()
       handleSubmit(e as unknown as React.FormEvent)
     }
   }
 
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value)
+    // Auto-resize textarea
+    const textarea = e.target
+    textarea.style.height = 'auto'
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'
+  }
+
   return (
-    <div className="border-t border-gray-700 bg-gray-800 p-4">
+    <div className="border-t border-slate-700 bg-slate-800 px-3 py-3 md:px-4 md:py-4 safe-area-bottom">
       {/* Image preview */}
       {imagePreview && (
         <div className="mb-3 relative inline-block">
-          <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-gray-700">
+          <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-slate-700">
             <Image
               src={imagePreview}
               alt="Preview"
@@ -86,7 +99,8 @@ export default function MessageInput({ onSend }: MessageInputProps) {
           <button
             type="button"
             onClick={clearImage}
-            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition"
+            className="absolute -top-2 -right-2 w-7 h-7 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white rounded-full flex items-center justify-center transition touch-target"
+            aria-label="Remove image"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -95,7 +109,7 @@ export default function MessageInput({ onSend }: MessageInputProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex items-end gap-3">
+      <form onSubmit={handleSubmit} className="flex items-end gap-2">
         {/* Hidden file input */}
         <input
           type="file"
@@ -110,8 +124,8 @@ export default function MessageInput({ onSend }: MessageInputProps) {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={sending}
-          className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition disabled:opacity-50"
-          title="Upload image"
+          className="p-3 text-slate-400 hover:text-white hover:bg-slate-700 active:bg-slate-600 rounded-xl transition disabled:opacity-50 touch-target shrink-0"
+          aria-label="Upload image"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -119,15 +133,16 @@ export default function MessageInput({ onSend }: MessageInputProps) {
         </button>
 
         {/* Text input */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <textarea
+            ref={textareaRef}
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             rows={1}
             disabled={sending}
-            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50"
+            className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50 text-base leading-normal"
             style={{ minHeight: '48px', maxHeight: '120px' }}
           />
         </div>
@@ -136,20 +151,21 @@ export default function MessageInput({ onSend }: MessageInputProps) {
         <button
           type="submit"
           disabled={sending || (!content.trim() && !imageFile)}
-          className="p-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-xl transition"
-          title="Send message"
+          className="p-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:bg-slate-600 disabled:cursor-not-allowed text-white rounded-xl transition touch-target shrink-0"
+          aria-label="Send message"
         >
           {sending ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           )}
         </button>
       </form>
 
-      <p className="mt-2 text-xs text-gray-500">
+      {/* Helper text - desktop only */}
+      <p className="hidden md:block mt-2 text-xs text-slate-500">
         Press Enter to send, Shift+Enter for new line
       </p>
     </div>
