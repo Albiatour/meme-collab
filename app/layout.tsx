@@ -5,7 +5,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Joelememe inspi - Create Memes Together',
+  title: 'MemeCollab - Create Memes Together',
   description: 'A collaborative space for creating memes with friends',
 }
 

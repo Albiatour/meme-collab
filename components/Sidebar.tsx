@@ -42,7 +42,7 @@ export default function Sidebar({
       <div className="p-4 border-b border-gray-700">
         <h1 className="text-xl font-bold text-white flex items-center gap-2">
           <span className="text-2xl">🎭</span>
-          Joelememe inspi
+          MemeCollab
         </h1>
       </div>
 
