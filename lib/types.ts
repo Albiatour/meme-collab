@@ -19,8 +19,27 @@ export interface Message {
   user_id: string
   content: string | null
   image_url: string | null
+  reply_to_id: string | null
   created_at: string
   profiles?: Profile
+  reply_to?: Message & { profiles?: Profile }
+  reactions?: Reaction[]
+}
+
+export interface Reaction {
+  id: string
+  message_id: string
+  user_id: string
+  emoji: string
+  created_at: string
+  profiles?: Profile
+}
+
+export interface ReactionCount {
+  emoji: string
+  count: number
+  users: { id: string; username: string }[]
+  hasReacted: boolean
 }
 
 export interface Database {
@@ -41,6 +60,14 @@ export interface Database {
         Insert: Omit<Message, 'id' | 'created_at'> & { id?: string; created_at?: string }
         Update: Partial<Omit<Message, 'id' | 'project_id' | 'user_id'>>
       }
+      reactions: {
+        Row: Reaction
+        Insert: Omit<Reaction, 'id' | 'created_at'> & { id?: string; created_at?: string }
+        Update: never
+      }
     }
   }
 }
+
+export const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🔥'] as const
+export type ReactionEmoji = typeof REACTION_EMOJIS[number]

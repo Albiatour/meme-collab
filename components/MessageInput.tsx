@@ -1,19 +1,30 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
+import { Message, Profile } from '@/lib/types'
+import ReplyPreview from './ReplyPreview'
 
 interface MessageInputProps {
   onSend: (content: string, imageFile?: File) => Promise<void>
+  replyTo?: (Message & { profiles?: Profile }) | null
+  onCancelReply?: () => void
 }
 
-export default function MessageInput({ onSend }: MessageInputProps) {
+export default function MessageInput({ onSend, replyTo, onCancelReply }: MessageInputProps) {
   const [content, setContent] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Focus input when replying
+  useEffect(() => {
+    if (replyTo && textareaRef.current) {
+      textareaRef.current.focus()
+    }
+  }, [replyTo])
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -70,6 +81,10 @@ export default function MessageInput({ onSend }: MessageInputProps) {
       e.preventDefault()
       handleSubmit(e as unknown as React.FormEvent)
     }
+    // Escape to cancel reply
+    if (e.key === 'Escape' && replyTo && onCancelReply) {
+      onCancelReply()
+    }
   }
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -81,6 +96,15 @@ export default function MessageInput({ onSend }: MessageInputProps) {
 
   return (
     <div className="px-3 pt-3 pb-3 pb-safe md:px-4 md:pt-4">
+      {/* Reply preview */}
+      {replyTo && (
+        <ReplyPreview
+          message={replyTo}
+          variant="input"
+          onCancel={onCancelReply}
+        />
+      )}
+
       {/* Image preview */}
       {imagePreview && (
         <div className="mb-3 relative inline-block">
@@ -132,7 +156,7 @@ export default function MessageInput({ onSend }: MessageInputProps) {
             value={content}
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
+            placeholder={replyTo ? 'Type your reply...' : 'Type a message...'}
             rows={1}
             disabled={sending}
             className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50 text-base leading-normal"
@@ -157,7 +181,7 @@ export default function MessageInput({ onSend }: MessageInputProps) {
       </form>
 
       <p className="hidden md:block mt-2 text-xs text-slate-500">
-        Press Enter to send, Shift+Enter for new line
+        {replyTo ? 'Press Escape to cancel reply • ' : ''}Press Enter to send, Shift+Enter for new line
       </p>
     </div>
   )
